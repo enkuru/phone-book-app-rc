@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 let validator = require('validator');
+import {PhoneNumberSchema} from './phone-number.model';
 import timestampPlugin from './plugins/timestamp.plugin';
 
 const PersonSchema = new mongoose.Schema({
@@ -9,7 +10,8 @@ const PersonSchema = new mongoose.Schema({
     type: String, required: true,
     unique: true, lowercase: true,
     validate: value => validator.isEmail(value)
-  }
+  },
+  numbers: [PhoneNumberSchema]
 }, {collection: 'Person'});
 
 PersonSchema.virtual('fullName').get(function () {
