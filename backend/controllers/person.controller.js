@@ -9,9 +9,7 @@ exports.getAll = (req, res) => {
 };
 
 exports.save = (req, res) => {
-  console.log(req.body);
   const person = new Person(req.body);
-  console.log(person);
   person.save().then(person => res.send(person)).catch(err => res.status(500).send(err));
 };
 

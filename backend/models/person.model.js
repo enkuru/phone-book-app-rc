@@ -1,6 +1,7 @@
-const mongoose = require('mongoose');
-let validator = require('validator');
-import {PhoneNumberSchema} from './phone-number.model';
+import mongoose from 'mongoose';
+import validator from 'validator';
+
+import PhoneNumber from './phone-number.model';
 import timestampPlugin from './plugins/timestamp.plugin';
 
 const PersonSchema = new mongoose.Schema({
@@ -11,8 +12,10 @@ const PersonSchema = new mongoose.Schema({
     unique: true, lowercase: true,
     validate: value => validator.isEmail(value)
   },
-  numbers: [PhoneNumberSchema]
+  numbers: [{type: mongoose.Schema.Types.ObjectId, ref: 'PhoneNumber'}]
 }, {collection: 'Person'});
+
+PersonSchema.plugin(timestampPlugin);
 
 PersonSchema.virtual('fullName').get(function () {
   return this.firstName + ' ' + this.lastName;
@@ -33,6 +36,9 @@ PersonSchema.statics.getPersons = function () {
   return this.find().then(emails => emails).catch(err => res.status(500).send(err));
 };
 
-PersonSchema.plugin(timestampPlugin);
-
+PersonSchema.pre('remove', function (next) {
+  console.log('pre remove of PhoneNumberSchema, ', this);
+  PhoneNumber.remove({owner: this._id}).exec();
+  next();
+});
 export default mongoose.model('Person', PersonSchema);
