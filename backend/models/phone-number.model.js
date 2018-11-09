@@ -11,20 +11,14 @@ const PhoneNumberSchema = new mongoose.Schema({
   owner: {type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Person'}
 }, {collection: 'PhoneNumber'});
 
-PhoneNumberSchema.post('save', function (doc) {
+PhoneNumberSchema.post('save', function (doc, next) {
   console.log('post save of PhoneNumberSchema, ', doc);
-  Person.findById(doc.owner).then(person => {
-    person.numbers.push(doc._id);
-    person.update();
-  });
+  Person.updateOne({_id: doc.owner}, {$push: {numbers: doc._id}}).exec(() => next());
 });
 
-PhoneNumberSchema.post('remove', function (doc) {
-  console.log('remove save of PhoneNumberSchema, ', doc);
-  Person.findById(doc.owner).then(person => {
-    person.numbers.remove(doc._id);
-    person.update();
-  });
+PhoneNumberSchema.post('remove', function (doc, next) {
+  console.log('post remove of PhoneNumberSchema, ', doc);
+  Person.updateOne({_id: doc.owner}, {$pull: {numbers: doc._id}}).exec(() => next());
 });
 
 export default mongoose.model('PhoneNumber', PhoneNumberSchema);
