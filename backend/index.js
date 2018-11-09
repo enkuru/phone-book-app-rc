@@ -14,21 +14,13 @@ const productsPathRoot = '/api/products';
 const personsPathRoot = '/api/persons';
 const phoneNumbersPathRoot = '/api/phoneNumbers';
 
-import Person from './models/person.model';
-import PhoneNumber from './models/phone-number.model'
-
 const PORT = 5000;
+const app = express();
 const dbUrl = 'mongodb://localhost/phone-book-app-rc';
 
 mongoose.connect(dbUrl, {useNewUrlParser: true})
-  .then(() => {
-    console.log('Database connection successful')
-  })
-  .catch(err => {
-    console.error('Database connection error: ', err)
-  });
-
-const app = express();
+  .then(() => console.log('Database connection successful'))
+  .catch(err =>  console.error('Database connection error: ', err));
 
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({extended: false}));
@@ -42,16 +34,6 @@ app.use(`${phoneNumbersPathRoot}`, phoneNumbers);
 
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);
-
-  console.log('starting foo test of collection relationships...');
-
-  /*PhoneNumber.findOne().then(p => {
-    console.log("find one number, ", p);
-    p.remove().then(r => {
-      console.log("remove number, ", r);
-    })
-  });*/
-
   /*let randomVal = Math.floor(Math.random() * 100);
   let person = new Person({
     firstName: "enes",
@@ -67,5 +49,12 @@ app.listen(PORT, () => {
       console.log("number saved, ", n);
       Person.findById(person._id).populate('numbers').then(p => console.log('last state of person, ', p));
     });
+  });
+
+  PhoneNumber.findOne().then(p => {
+    console.log("find one number, ", p);
+    p.remove().then(r => {
+      console.log("remove number, ", r);
+    })
   });*/
 });

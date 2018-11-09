@@ -12,12 +12,10 @@ const PhoneNumberSchema = new mongoose.Schema({
 }, {collection: 'PhoneNumber'});
 
 PhoneNumberSchema.post('save', function (doc, next) {
-  console.log('post save of PhoneNumberSchema, ', doc);
   Person.updateOne({_id: doc.owner}, {$push: {numbers: doc._id}}).exec(() => next());
 });
 
 PhoneNumberSchema.post('remove', function (doc, next) {
-  console.log('post remove of PhoneNumberSchema, ', doc);
   Person.updateOne({_id: doc.owner}, {$pull: {numbers: doc._id}}).exec(() => next());
 });
 

@@ -37,7 +37,6 @@ PersonSchema.statics.getPersons = function () {
 };
 
 PersonSchema.pre('remove', function (next) {
-  console.log('pre remove of PhoneNumberSchema, ', this);
   PhoneNumber.remove({owner: this._id}).exec();
   next();
 });

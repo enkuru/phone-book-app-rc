@@ -4,8 +4,8 @@ exports.getById = (req, res) => {
   PhoneNumber.findById(req.params.id).then(person => res.send(person)).catch(err => res.status(500).send(err));
 };
 
-exports.getAllByPersonId = (req, res) => {
-  PhoneNumber.find({owner: req.body.id}).then(persons => res.send(persons)).catch(err => res.status(500).send(err));
+exports.getByPersonId = (req, res) => {
+  PhoneNumber.find({owner: req.params.personId}).then(persons => res.send(persons)).catch(err => res.status(500).send(err));
 };
 
 exports.save = (req, res) => {
