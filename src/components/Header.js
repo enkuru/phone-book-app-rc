@@ -24,6 +24,7 @@ class Header extends Component {
               <Image size='mini' src='https://react.semantic-ui.com/logo.png'/>
               <Menu.Item header>Phone Book App</Menu.Item>
             </Menu.Item>
+            <Menu.Item as={NavLink} to='/persons' exact>Persons</Menu.Item>
           </Container>
         </Menu>
       </Visibility>
