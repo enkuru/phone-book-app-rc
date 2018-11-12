@@ -8,6 +8,14 @@ import NumberTable from "./NumberTable";
 class PersonDetailModal extends Component {
   static propTypes = {person: PropTypes.object.isRequired};
 
+  static defaultProps = {
+    modalButtonIcon: 'address card',
+    modalButtonColor: 'blue',
+    modalButtonSize: 'mini',
+    modelButtonContent: '',
+  };
+
+
   state = {
     modalOpen: false,
     firstName: this.props.person.firstName,
@@ -31,16 +39,16 @@ class PersonDetailModal extends Component {
     this.setState({numbers: deletes});
   };
 
-  handleOpen = () => this.setState({modalOpen: true});
-
-  handleClose = () => this.setState({modalOpen: false});
+  handleModal = state => this.setState({modalOpen: state});
 
   handleChange = e => this.setState({[e.target.name]: e.target.value});
 
   render() {
     return (
-      <Modal trigger={<Button color='blue' size='mini' icon='address card' onClick={this.handleOpen}/>}
-             open={this.state.modalOpen} onClose={this.handleClose} dimmer='blurring' centered={false}>
+      <Modal trigger={<Button color={this.props.modalButtonColor} size={this.props.modalButtonSize}
+                              content={this.props.modelButtonContent} icon={this.props.modalButtonIcon}
+                              onClick={() => this.handleModal(true)}/>}
+             open={this.state.modalOpen} onClose={() => this.handleModal(false)} dimmer='blurring' centered={false}>
         <Modal.Header>Person Details</Modal.Header>
         <Modal.Content>
           <Form>
@@ -63,11 +71,11 @@ class PersonDetailModal extends Component {
           </Form>
         </Modal.Content>
         <Modal.Actions>
-          <Button color='green' onClick={this.handleClose} inverted>
+          <Button color='green' onClick={() => this.handleModal(false)} inverted>
             <Icon name='checkmark'/> Save
           </Button>
 
-          <Button color='red' onClick={this.handleClose} inverted>
+          <Button color='red' onClick={() => this.handleModal(false)} inverted>
             <Icon name='delete'/> Close
           </Button>
         </Modal.Actions>
