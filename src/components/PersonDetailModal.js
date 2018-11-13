@@ -13,8 +13,16 @@ class PersonDetailModal extends Component {
     modalButtonColor: 'blue',
     modalButtonSize: 'mini',
     modelButtonContent: '',
+    newPerson: false
   };
 
+  initState = {
+    modalOpen: false,
+    firstName: '',
+    lastName: '',
+    email: '',
+    numbers: []
+  };
 
   state = {
     modalOpen: false,
@@ -24,32 +32,37 @@ class PersonDetailModal extends Component {
     numbers: this.props.person.numbers
   };
 
-  addNumber = number => {
-    let newNumbers = update(this.state.numbers, {$push: [{number, owner: this.props.person._id}]});
-    this.setState({numbers: newNumbers});
+  savePerson = () => {
+
   };
 
-  editNumber = (index, number) => {
-    let state = update(this.state, {numbers: {[index]: {number: {$set: number}}}});
-    this.setState(state);
-  };
+  addNumber = number => this.setState({
+    numbers: update(this.state.numbers, {$push: [{number, owner: this.props.person._id}]})
+  });
 
-  deleteNumber = index => {
-    let deletes = update(this.state.numbers, {$splice: [[index, 1]]});
-    this.setState({numbers: deletes});
-  };
+  editNumber = (index, number) => this.setState(update(this.state, {numbers: {[index]: {number: {$set: number}}}}));
 
-  handleModal = state => this.setState({modalOpen: state});
+  deleteNumber = index => this.setState({numbers: update(this.state.numbers, {$splice: [[index, 1]]})});
+
+  handleModal = modalState => {
+    if (!modalState && this.props.newPerson) {
+      this.setState(this.initState)
+    } else {
+      this.setState({modalOpen: modalState})
+    }
+  };
 
   handleChange = e => this.setState({[e.target.name]: e.target.value});
 
   render() {
+    const header = this.props.newPerson ? 'New Person' : 'Person Details';
+
     return (
-      <Modal trigger={<Button color={this.props.modalButtonColor} size={this.props.modalButtonSize}
+      <Modal trigger={<Button fluid color={this.props.modalButtonColor} size={this.props.modalButtonSize}
                               content={this.props.modelButtonContent} icon={this.props.modalButtonIcon}
                               onClick={() => this.handleModal(true)}/>}
              open={this.state.modalOpen} onClose={() => this.handleModal(false)} dimmer='blurring' centered={false}>
-        <Modal.Header>Person Details</Modal.Header>
+        <Modal.Header>{header}</Modal.Header>
         <Modal.Content>
           <Form>
             <Form.Group widths='equal'>
@@ -71,13 +84,9 @@ class PersonDetailModal extends Component {
           </Form>
         </Modal.Content>
         <Modal.Actions>
-          <Button color='green' onClick={() => this.handleModal(false)} inverted>
-            <Icon name='checkmark'/> Save
-          </Button>
+          <Button color='green' onClick={this.savePerson} inverted><Icon name='checkmark'/> Save</Button>
 
-          <Button color='red' onClick={() => this.handleModal(false)} inverted>
-            <Icon name='delete'/> Close
-          </Button>
+          <Button color='red' onClick={() => this.handleModal(false)} inverted><Icon name='delete'/> Close</Button>
         </Modal.Actions>
       </Modal>
     );

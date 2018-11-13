@@ -1,27 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Button, Table} from 'semantic-ui-react'
+import {Table} from 'semantic-ui-react'
 
 import PersonRow from './PersonRow';
 import HashLoader from 'react-spinners/HashLoader';
 import PersonDetailModal from "./PersonDetailModal";
 
-const newPerson = {firstName: '', lastName: '', email: '', numbers: []};
-
 const PersonTable = ({persons, deletePerson}) => {
-  const tableHeader = (
-    <Table.Header>
+  const TableHeader = () => {
+    const newPerson = {firstName: '', lastName: '', email: '', numbers: []};
+
+    return (<Table.Header>
       <Table.Row>
         <Table.HeaderCell>First Name</Table.HeaderCell>
         <Table.HeaderCell>Last Name</Table.HeaderCell>
         <Table.HeaderCell>Email</Table.HeaderCell>
-        <Table.HeaderCell>
-          <PersonDetailModal person={newPerson}/>
-          <Button positive fluid size='tiny' content='New Person'/>
+        <Table.HeaderCell width={3}>
+          <PersonDetailModal person={newPerson} modalButtonIcon='' newPerson={true}
+                             modelButtonContent='New Person' modalButtonColor='green' modalButtonSize='tiny'/>
         </Table.HeaderCell>
       </Table.Row>
-    </Table.Header>
-  );
+    </Table.Header>)
+  };
 
   const emptyMessage = (
     <div>
@@ -38,7 +38,7 @@ const PersonTable = ({persons, deletePerson}) => {
       <HashLoader color={'#35bdb2'} sizeUnit={"px"} size={40} loading={persons.fetching}/>
 
       <Table celled>
-        {tableHeader}
+        <TableHeader/>
 
         <Table.Body>
           {persons.list.length ?
