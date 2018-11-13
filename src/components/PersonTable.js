@@ -6,7 +6,7 @@ import PersonRow from './PersonRow';
 import HashLoader from 'react-spinners/HashLoader';
 import PersonDetailModal from "./PersonDetailModal";
 
-const PersonTable = ({persons, deletePerson}) => {
+const PersonTable = ({persons, savePerson, deletePerson}) => {
   const TableHeader = () => {
     const newPerson = {firstName: '', lastName: '', email: '', numbers: []};
 
@@ -16,7 +16,7 @@ const PersonTable = ({persons, deletePerson}) => {
         <Table.HeaderCell>Last Name</Table.HeaderCell>
         <Table.HeaderCell>Email</Table.HeaderCell>
         <Table.HeaderCell width={3}>
-          <PersonDetailModal person={newPerson} modalButtonIcon='' newPerson={true}
+          <PersonDetailModal person={newPerson} modalButtonIcon='' newPerson={true} savePerson={savePerson}
                              modelButtonContent='New Person' modalButtonColor='green' modalButtonSize='tiny'/>
         </Table.HeaderCell>
       </Table.Row>

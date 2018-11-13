@@ -32,9 +32,13 @@ class PersonDetailModal extends Component {
     numbers: this.props.person.numbers
   };
 
-  savePerson = () => {
-
-  };
+  savePerson = () => this.props.savePerson({
+    _id: this.props.person._id ? this.props.person._id : null,
+    firstName: this.state.firstName,
+    lastName: this.state.lastName,
+    email: this.state.email,
+    numbers: this.state.numbers
+  });
 
   addNumber = number => this.setState({
     numbers: update(this.state.numbers, {$push: [{number, owner: this.props.person._id}]})
@@ -44,13 +48,7 @@ class PersonDetailModal extends Component {
 
   deleteNumber = index => this.setState({numbers: update(this.state.numbers, {$splice: [[index, 1]]})});
 
-  handleModal = modalState => {
-    if (!modalState && this.props.newPerson) {
-      this.setState(this.initState)
-    } else {
-      this.setState({modalOpen: modalState})
-    }
-  };
+  handleModal = modalState => this.setState(!modalState && this.props.newPerson ? this.initState : {modalOpen: modalState});
 
   handleChange = e => this.setState({[e.target.name]: e.target.value});
 
