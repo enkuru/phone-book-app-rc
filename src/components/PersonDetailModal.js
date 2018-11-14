@@ -12,7 +12,7 @@ class PersonDetailModal extends Component {
     modalButtonIcon: 'address card',
     modalButtonColor: 'blue',
     modalButtonSize: 'mini',
-    modelButtonContent: '',
+    modelButtonContent: 'Details',
     newPerson: false
   };
 
@@ -32,16 +32,20 @@ class PersonDetailModal extends Component {
     numbers: this.props.person.numbers
   };
 
-  savePerson = () => this.props.savePerson({
-    _id: this.props.person._id ? this.props.person._id : null,
-    firstName: this.state.firstName,
-    lastName: this.state.lastName,
-    email: this.state.email,
-    numbers: this.state.numbers
-  });
+  savePerson = () => {
+    this.props.savePerson({
+      _id: this.props.person._id ? this.props.person._id : null,
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+      email: this.state.email,
+      numbers: this.state.numbers
+    })
+  };
 
   addNumber = number => this.setState({
-    numbers: update(this.state.numbers, {$push: [{number, owner: this.props.person._id}]})
+    numbers: update(this.state.numbers, {
+      $push: [{number, owner: this.props.person._id ? this.props.person._id : null}]
+    })
   });
 
   editNumber = (index, number) => this.setState(update(this.state, {numbers: {[index]: {number: {$set: number}}}}));
@@ -82,7 +86,7 @@ class PersonDetailModal extends Component {
           </Form>
         </Modal.Content>
         <Modal.Actions>
-          <Button color='green' onClick={this.savePerson} inverted><Icon name='checkmark'/> Save</Button>
+          <Button color='green' onClick={() => this.savePerson()} inverted><Icon name='checkmark'/> Save</Button>
 
           <Button color='red' onClick={() => this.handleModal(false)} inverted><Icon name='delete'/> Close</Button>
         </Modal.Actions>

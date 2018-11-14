@@ -1,4 +1,5 @@
 import Person from '../models/person.model';
+import PhoneNumber from '../models/phone-number.model';
 
 exports.getById = (req, res) => {
   Person.findById(req.params.id).populate('numbers').then(person => res.send(person)).catch(err => res.status(500).send(err));
@@ -9,8 +10,25 @@ exports.getAll = (req, res) => {
 };
 
 exports.save = (req, res) => {
-  const person = new Person(req.body);
-  person.save().then(person => res.send(person)).catch(err => res.status(500).send(err));
+  const data = {firstName: req.body.firstName, lastName: req.body.lastName, email: req.body.email};
+  const person = new Person(data);
+
+  person.save().then(async person => {
+    let numbers = req.body.numbers.map(n => ({number: n.number, owner: person._id}));
+
+    async function asyncForEach(array, callback) {
+      for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+      }
+    }
+
+    const start = async () => {
+      await asyncForEach(numbers, async (num) => await new PhoneNumber(num).save());
+      Person.findById(person._id).populate('numbers').then(person => res.send(person));
+    };
+
+    await start();
+  }).catch(err => res.status(500).send(err));
 };
 
 exports.update = (req, res) => {

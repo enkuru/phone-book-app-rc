@@ -11,11 +11,11 @@ const PersonRow = ({person, deletePerson}) => (
     <Table.Cell width={2}>
       <Grid columns={2}>
         <Grid.Row>
-          <Grid.Column>
+          <Grid.Column width={10}>
             <PersonDetailModal person={person}/>
           </Grid.Column>
 
-          <Grid.Column>
+          <Grid.Column width={1}>
             <Button color='red' size='mini' onClick={() => deletePerson(person._id)} icon='trash'/>
           </Grid.Column>
         </Grid.Row>

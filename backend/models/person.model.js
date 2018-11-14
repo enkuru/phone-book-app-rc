@@ -40,4 +40,5 @@ PersonSchema.pre('remove', function (next) {
   PhoneNumber.remove({owner: this._id}).exec();
   next();
 });
+
 export default mongoose.model('Person', PersonSchema);
