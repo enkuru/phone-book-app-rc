@@ -1,40 +1,35 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import update from 'immutability-helper';
 import {Button, Form, Icon, Modal} from 'semantic-ui-react'
 
+import {loadPerson} from '../actions/personModal';
 import NumberTable from "./NumberTable";
+import {connect} from "react-redux";
 
 class PersonDetailModal extends Component {
-  static propTypes = {person: PropTypes.object.isRequired};
-
-  static defaultProps = {
-    modalButtonIcon: 'address card',
-    modalButtonColor: 'blue',
-    modalButtonSize: 'mini',
-    modelButtonContent: 'Details',
-    newPerson: false
-  };
-
-  initState = {
-    modalOpen: false,
-    firstName: '',
-    lastName: '',
-    email: '',
-    numbers: []
-  };
-
   state = {
-    modalOpen: false,
-    firstName: this.props.person.firstName,
-    lastName: this.props.person.lastName,
-    email: this.props.person.email,
-    numbers: this.props.person.numbers
+    newPerson: !this.props.personModal.person._id,
+    firstName: this.props.personModal.person.firstName,
+    lastName: this.props.personModal.person.lastName,
+    email: this.props.personModal.person.email,
+    numbers: this.props.personModal.person.numbers,
+    modalOpen: this.props.personModal.modalOpen
   };
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      newPerson: !nextProps.personModal.person._id,
+      firstName: nextProps.personModal.person.firstName,
+      lastName: nextProps.personModal.person.lastName,
+      email: nextProps.personModal.person.email,
+      numbers: nextProps.personModal.person.numbers,
+      modalOpen: nextProps.personModal.modalOpen
+    });
+  }
 
   savePerson = () => {
     this.props.savePerson({
-      _id: this.props.person._id ? this.props.person._id : null,
+      _id: this.props.personModal.person._id ? this.props.personModal.person._id : null,
       firstName: this.state.firstName,
       lastName: this.state.lastName,
       email: this.state.email,
@@ -44,7 +39,7 @@ class PersonDetailModal extends Component {
 
   addNumber = number => this.setState({
     numbers: update(this.state.numbers, {
-      $push: [{number, owner: this.props.person._id ? this.props.person._id : null}]
+      $push: [{number, owner: this.props.personModal.person._id ? this.props.personModal.person._id : null}]
     })
   });
 
@@ -52,18 +47,15 @@ class PersonDetailModal extends Component {
 
   deleteNumber = index => this.setState({numbers: update(this.state.numbers, {$splice: [[index, 1]]})});
 
-  handleModal = modalState => this.setState(!modalState && this.props.newPerson ? this.initState : {modalOpen: modalState});
+  handleModal = modalState => this.setState({modalOpen: modalState});
 
   handleChange = e => this.setState({[e.target.name]: e.target.value});
 
   render() {
-    const header = this.props.newPerson ? 'New Person' : 'Person Details';
+    const header = this.state.newPerson ? 'New Person' : 'Person Details';
 
     return (
-      <Modal trigger={<Button fluid color={this.props.modalButtonColor} size={this.props.modalButtonSize}
-                              content={this.props.modelButtonContent} icon={this.props.modalButtonIcon}
-                              onClick={() => this.handleModal(true)}/>}
-             open={this.state.modalOpen} onClose={() => this.handleModal(false)} dimmer='blurring' centered={false}>
+      <Modal open={this.state.modalOpen} onClose={() => this.handleModal(false)} dimmer='blurring' centered={false}>
         <Modal.Header>{header}</Modal.Header>
         <Modal.Content>
           <Form>
@@ -95,4 +87,10 @@ class PersonDetailModal extends Component {
   }
 }
 
-export default PersonDetailModal;
+const mapStateToProps = ({personModal}) => {
+  return {personModal};
+};
+
+const mapDispatchToProps = {loadPerson};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PersonDetailModal);

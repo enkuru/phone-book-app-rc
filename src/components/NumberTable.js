@@ -23,13 +23,9 @@ class NumberTable extends Component {
     this.setState(newState);
   };
 
-  onChangeNumber = e => {
-    this.props.editNumber(e.target.name, e.target.value);
-  };
+  onChangeNumber = e => this.props.editNumber(e.target.name, e.target.value);
 
-  addNew = () => {
-    this.props.addNumber('');
-  };
+  addNew = () => this.props.addNumber('');
 
   render() {
     const header = (
@@ -37,16 +33,15 @@ class NumberTable extends Component {
         <Table.Row>
           <Table.HeaderCell>Number</Table.HeaderCell>
           <Table.HeaderCell width={3}>
-            <Button positive fluid size='tiny' onClick={() => this.addNew('')}
-                    content='Add Number'/>
+            <Button positive fluid size='tiny' onClick={this.addNew} content='Add Number'/>
           </Table.HeaderCell>
         </Table.Row>
       </Table.Header>
     );
 
-    const Operations = (item, index) => (
+    const Operations = ({item, index}) => (
       <Grid.Row>
-        {!item._id ? null :
+        {!item._id ? <Grid.Column>&nbsp;</Grid.Column> :
           <Grid.Column>
             {this.state.editStates[index] ?
               <Button color='green' size='mini' onClick={() => {

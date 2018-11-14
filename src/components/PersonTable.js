@@ -1,23 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Table} from 'semantic-ui-react'
+import {Button, Table} from 'semantic-ui-react'
 
 import PersonRow from './PersonRow';
 import HashLoader from 'react-spinners/HashLoader';
-import PersonDetailModal from "./PersonDetailModal";
 
-const PersonTable = ({persons, savePerson, deletePerson}) => {
+const PersonTable = ({persons, savePerson, loadPerson, deletePerson}) => {
   const TableHeader = () => {
-    const newPerson = {firstName: '', lastName: '', email: '', numbers: []};
-
     return (<Table.Header>
       <Table.Row>
         <Table.HeaderCell>First Name</Table.HeaderCell>
         <Table.HeaderCell>Last Name</Table.HeaderCell>
         <Table.HeaderCell>Email</Table.HeaderCell>
         <Table.HeaderCell width={3}>
-          <PersonDetailModal person={newPerson} modalButtonIcon='' newPerson={true} savePerson={savePerson}
-                             modelButtonContent='New Person' modalButtonColor='green' modalButtonSize='tiny'/>
+          <Button fluid color='green' size='mini' content='New Person' icon='plus'
+                  onClick={() => loadPerson({firstName: '', lastName: '', email: '', numbers: []})}/>
         </Table.HeaderCell>
       </Table.Row>
     </Table.Header>)
@@ -42,7 +39,7 @@ const PersonTable = ({persons, savePerson, deletePerson}) => {
 
         <Table.Body>
           {persons.list.length ?
-            persons.list.map(person => <PersonRow deletePerson={deletePerson} key={person._id} person={person}/>)
+            persons.list.map(person => <PersonRow loadPerson={loadPerson} deletePerson={deletePerson} key={person._id} person={person}/>)
             :
             <Table.Row>
               <Table.Cell textAlign='center' colSpan={4}>
