@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {Header, Icon} from 'semantic-ui-react'
 
-import {fetchPersons, deletePerson} from './../../actions/persons';
+import {fetchPersons, savePerson, updatePerson, deletePerson} from './../../actions/persons';
 import PersonTable from "../PersonTable";
 
 class PersonsPage extends Component {
@@ -15,6 +15,8 @@ class PersonsPage extends Component {
   componentDidMount() {
     this.props.fetchPersons();
   }
+
+  savePerson = person => person._id ? this.props.updatePerson(person) : this.props.savePerson(person);
 
   render() {
     const header = (
@@ -29,7 +31,8 @@ class PersonsPage extends Component {
     return (
       <div>
         {header}
-        <PersonTable deletePerson={this.props.deletePerson} persons={this.props.persons}/>
+        <PersonTable deletePerson={this.props.deletePerson} savePerson={this.props.savePerson}
+                     persons={this.props.persons}/>
       </div>
     );
   }
@@ -39,6 +42,6 @@ const mapStateToProps = ({persons}) => {
   return {persons};
 };
 
-const mapDispatchToProps = {fetchPersons, deletePerson};
+const mapDispatchToProps = {fetchPersons, savePerson, updatePerson, deletePerson};
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonsPage);
