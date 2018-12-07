@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Grid, Button, Table} from 'semantic-ui-react'
-import PersonDetailModal from './PersonDetailModal';
 
 const PersonRow = ({person, loadPerson, deletePerson}) => (
   <Table.Row>
@@ -14,7 +13,6 @@ const PersonRow = ({person, loadPerson, deletePerson}) => (
           <Grid.Column width={12}>
             <Button fluid color='green' size='mini' content='Detail' icon='address card'
                     onClick={() => loadPerson(person)}/>
-            {/*<PersonDetailModal person={person}/>*/}
           </Grid.Column>
 
           <Grid.Column width={1}>

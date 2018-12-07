@@ -1,6 +1,12 @@
 import Person from '../models/person.model';
 import PhoneNumber from '../models/phone-number.model';
 
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+}
+
 exports.getById = (req, res) => {
   Person.findById(req.params.id).populate('numbers').then(person => res.send(person)).catch(err => res.status(500).send(err));
 };
@@ -16,12 +22,6 @@ exports.save = (req, res) => {
   person.save().then(async person => {
     let numbers = req.body.numbers.map(n => ({number: n.number, owner: person._id}));
 
-    async function asyncForEach(array, callback) {
-      for (let index = 0; index < array.length; index++) {
-        await callback(array[index], index, array);
-      }
-    }
-
     const start = async () => {
       await asyncForEach(numbers, async (num) => await new PhoneNumber(num).save());
       Person.findById(person._id).populate('numbers').then(person => res.send(person));
@@ -32,7 +32,27 @@ exports.save = (req, res) => {
 };
 
 exports.update = (req, res) => {
-  Person.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}).then(person => res.send(person)).catch(err => res.status(500).send(err));
+  let numbers = req.body.numbers.map(n => (n._id ? n : {number: n.number, owner: person._id}));
+  req.body.numbers = req.body.numbers.filter(n => !!n._id);
+
+  Person.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}).populate('numbers').then(async person => {
+    const start = async () => {
+      await PhoneNumber.find({owner: req.params.id}).then(async numbers => {
+        let willDeletes = numbers.filter(num => !req.body.numbers.find(n => num._id.toJSON() === n._id));
+
+        await asyncForEach(willDeletes, async (num) => await PhoneNumber.findByIdAndRemove(num._id));
+      });
+
+      await asyncForEach(numbers, async (num) => num._id ? PhoneNumber.findByIdAndUpdate(num._id, {$set: num}) : await new PhoneNumber(num).save());
+
+      Person.findById(person._id).populate('numbers').then(person => res.send(person));
+    };
+
+    await start();
+  }).catch(err => {
+    console.log(err);
+    res.status(500).send(err);
+  });
 };
 
 exports.delete = (req, res) => {

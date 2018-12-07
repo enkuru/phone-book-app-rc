@@ -9,8 +9,7 @@ const PersonSchema = new mongoose.Schema({
   lastName: String,
   email: {
     type: String, required: true,
-    unique: true, lowercase: true,
-    validate: value => validator.isEmail(value)
+    unique: true, lowercase: true
   },
   numbers: [{type: mongoose.Schema.Types.ObjectId, ref: 'PhoneNumber'}]
 }, {collection: 'Person'});

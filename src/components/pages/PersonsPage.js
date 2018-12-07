@@ -3,8 +3,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import {Header, Icon} from 'semantic-ui-react'
 
-import {deletePerson, fetchPersons, savePerson, updatePerson} from './../../actions/persons';
-import {loadPerson} from './../../actions/personModal';
+import {deletePerson, fetchPersons, loadPerson} from './../../actions/persons';
 import PersonTable from "../PersonTable";
 import PersonDetailModal from "../PersonDetailModal";
 
@@ -13,8 +12,6 @@ class PersonsPage extends Component {
     persons: PropTypes.object.isRequired,
     deletePerson: PropTypes.func.isRequired
   };
-  /**/
-  savePerson = person => person._id ? this.props.updatePerson(person) : this.props.savePerson(person);
 
   componentDidMount() {
     this.props.fetchPersons();
@@ -33,9 +30,9 @@ class PersonsPage extends Component {
     return (
       <div>
         {header}
-        <PersonTable deletePerson={this.props.deletePerson} savePerson={this.props.savePerson} loadPerson={this.props.loadPerson}
+        <PersonTable deletePerson={this.props.deletePerson} loadPerson={this.props.loadPerson}
                      persons={this.props.persons}/>
-        <PersonDetailModal savePerson={savePerson}/>
+        <PersonDetailModal/>
       </div>
     );
   }
@@ -45,6 +42,6 @@ const mapStateToProps = ({persons}) => {
   return {persons};
 };
 
-const mapDispatchToProps = {fetchPersons, savePerson, updatePerson, deletePerson, loadPerson};
+const mapDispatchToProps = {fetchPersons, deletePerson, loadPerson};
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonsPage);

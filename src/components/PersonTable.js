@@ -5,7 +5,7 @@ import {Button, Table} from 'semantic-ui-react'
 import PersonRow from './PersonRow';
 import HashLoader from 'react-spinners/HashLoader';
 
-const PersonTable = ({persons, savePerson, loadPerson, deletePerson}) => {
+const PersonTable = ({persons, loadPerson, deletePerson}) => {
   const TableHeader = () => {
     return (<Table.Header>
       <Table.Row>
